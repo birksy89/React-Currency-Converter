@@ -25,17 +25,22 @@ class App extends React.Component {
   handleSelectChange = e => {
     const newCode = e.target.value;
     const activeCurrency = this.getCurrencyFromCode(newCode);
+    const { inputLeft } = this.state;
+
+    // When changing the currency, update the value using new exchange
+    const newinputRightValue = inputLeft * activeCurrency.sellRate;
 
     this.setState({
       activeCurrencyCode: activeCurrency.code,
+      inputRight: newinputRightValue,
     });
   };
 
   handleInputChange = (e, side) => {
-    const { activeCurrencyCode } = this.state;
     const {
       target: { value },
     } = e;
+    const { activeCurrencyCode } = this.state;
 
     const activeCurrency = this.getCurrencyFromCode(activeCurrencyCode);
 
@@ -116,7 +121,6 @@ class App extends React.Component {
                   <span className="input-group-addon">$</span>
                   <input
                     type="number"
-                    defaultValue={0}
                     value={inputLeft}
                     className="form-control"
                     aria-describedby="basic-addon2"
@@ -142,7 +146,6 @@ class App extends React.Component {
                   </span>
                   <input
                     type="number"
-                    defaultValue={0}
                     value={inputRight}
                     className="form-control"
                     aria-describedby="basic-addon3"
