@@ -24,14 +24,11 @@ class App extends React.Component {
   }
 
   handleCurrencyChange = e => {
-    console.log('here', e.target.value);
     const newCode = e.target.value;
     const { currencies } = this.state;
     const activeCurrency = currencies.filter(
       currency => currency.code === newCode
     );
-
-    console.log(activeCurrency);
 
     this.setState({
       activeCurrencyCode: activeCurrency[0].code,
@@ -43,8 +40,6 @@ class App extends React.Component {
     const [activeCurrency] = currencies.filter(
       currency => currency.code === activeCurrencyCode
     );
-
-    console.log(activeCurrency);
 
     if (activeCurrency) {
       return (
@@ -126,7 +121,12 @@ class App extends React.Component {
                 {
                   // Update to currently selected currency
                 }
-                <p>Exchange Rate $ 1 AUD = $ 0.7041 USD</p>
+                <p>
+                  Exchange Rate $ 1 AUD ={' '}
+                  {`${activeCurrency.sign} ${activeCurrency.sellRate} ${
+                    activeCurrency.code
+                  }`}
+                </p>
               </div>
             </div>
           </div>
