@@ -1,13 +1,45 @@
 import React from 'react';
 import image from '../images/cash-calculator.svg';
+import data from './data/Data';
 
 class App extends React.Component {
   // eslint-disable-next-line no-useless-constructor
   constructor(props) {
     super(props);
+
+    this.state = {
+      currencies: [],
+      activeCurrencyCode: 'USD',
+    };
   }
 
+  componentDidMount() {
+    const { currencies } = data;
+    const currencyNames = currencies.map(currency => currency.name);
+    console.log(currencyNames);
+
+    this.setState({
+      currencies,
+    });
+  }
+
+  handleCurrencyChange = e => {
+    console.log('here', e.target.value);
+    const newCode = e.target.value;
+    const { currencies } = this.state;
+    const activeCurrency = currencies.filter(
+      currency => currency.code === newCode
+    );
+
+    console.log(activeCurrency);
+
+    this.setState({
+      activeCurrencyCode: activeCurrency[0].code,
+    });
+  };
+
   render() {
+    const { currencies, activeCurrencyCode } = this.state;
     return (
       <div>
         <header>
@@ -22,9 +54,18 @@ class App extends React.Component {
                 {
                   // Select currency
                 }
-                <select>
-                  <option value="A">Option A</option>
-                  <option value="B">Option B</option>
+                <select onChange={e => this.handleCurrencyChange(e)}>
+                  {currencies.map(currency => (
+                    <option
+                      selected={
+                        currency.code === activeCurrencyCode ? 'selected' : ''
+                      }
+                      key={currency.code}
+                      value={currency.code}
+                    >
+                      {currency.name}
+                    </option>
+                  ))}
                 </select>
               </p>
             </div>
