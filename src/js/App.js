@@ -40,6 +40,12 @@ class App extends React.Component {
 
   render() {
     const { currencies, activeCurrencyCode } = this.state;
+    const [activeCurrency] = currencies.filter(
+      currency => currency.code === activeCurrencyCode
+    );
+
+    console.log(activeCurrency);
+
     return (
       <div>
         <header>
@@ -54,15 +60,12 @@ class App extends React.Component {
                 {
                   // Select currency
                 }
-                <select onChange={e => this.handleCurrencyChange(e)}>
+                <select
+                  value={activeCurrencyCode}
+                  onChange={e => this.handleCurrencyChange(e)}
+                >
                   {currencies.map(currency => (
-                    <option
-                      selected={
-                        currency.code === activeCurrencyCode ? 'selected' : ''
-                      }
-                      key={currency.code}
-                      value={currency.code}
-                    >
+                    <option key={currency.code} value={currency.code}>
                       {currency.name}
                     </option>
                   ))}
