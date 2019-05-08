@@ -10,36 +10,61 @@ class App extends React.Component {
     this.state = {
       currencies: [],
       activeCurrencyCode: 'USD',
+      inputLeft: 0,
+      inputRight: 0,
     };
   }
 
   componentDidMount() {
     const { currencies } = data;
-    const currencyNames = currencies.map(currency => currency.name);
-    console.log(currencyNames);
-
     this.setState({
       currencies,
     });
   }
 
-  handleCurrencyChange = e => {
+  handleSelectChange = e => {
     const newCode = e.target.value;
-    const { currencies } = this.state;
-    const activeCurrency = currencies.filter(
-      currency => currency.code === newCode
-    );
+    const activeCurrency = this.getCurrencyFromCode(newCode);
 
     this.setState({
-      activeCurrencyCode: activeCurrency[0].code,
+      activeCurrencyCode: activeCurrency.code,
     });
   };
 
-  render() {
-    const { currencies, activeCurrencyCode } = this.state;
+  handleInputChange = e => {
+    const { activeCurrencyCode } = this.state;
+    const {
+      target: { value },
+    } = e;
+
+    const activeCurrency = this.getCurrencyFromCode(activeCurrencyCode);
+
+    const rightVal = value * activeCurrency.sellRate;
+
+    this.setState({
+      inputLeft: value,
+      inputRight: rightVal,
+    });
+  };
+
+  getCurrencyFromCode = code => {
+    const { currencies } = this.state;
+
     const [activeCurrency] = currencies.filter(
-      currency => currency.code === activeCurrencyCode
+      currency => currency.code === code
     );
+
+    return activeCurrency;
+  };
+
+  render() {
+    const {
+      currencies,
+      activeCurrencyCode,
+      inputLeft,
+      inputRight,
+    } = this.state;
+    const activeCurrency = this.getCurrencyFromCode(activeCurrencyCode);
 
     if (activeCurrency) {
       return (
@@ -58,7 +83,7 @@ class App extends React.Component {
                   }
                   <select
                     value={activeCurrencyCode}
-                    onChange={e => this.handleCurrencyChange(e)}
+                    onChange={e => this.handleSelectChange(e)}
                   >
                     {currencies.map(currency => (
                       <option key={currency.code} value={currency.code}>
@@ -81,10 +106,12 @@ class App extends React.Component {
                   <input
                     type="number"
                     defaultValue={0}
+                    value={inputLeft}
                     className="form-control"
                     aria-describedby="basic-addon2"
                     step="1"
                     pattern="\d\.\d{2}"
+                    onChange={e => this.handleInputChange(e)}
                   />
                   <span className="input-group-addon" id="basic-addon2">
                     AUD
@@ -105,6 +132,7 @@ class App extends React.Component {
                   <input
                     type="number"
                     defaultValue={0}
+                    value={inputRight}
                     className="form-control"
                     aria-describedby="basic-addon3"
                     step="1"
