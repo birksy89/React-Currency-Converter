@@ -31,7 +31,7 @@ class App extends React.Component {
     });
   };
 
-  handleInputChange = e => {
+  handleInputChange = (e, side) => {
     const { activeCurrencyCode } = this.state;
     const {
       target: { value },
@@ -39,10 +39,21 @@ class App extends React.Component {
 
     const activeCurrency = this.getCurrencyFromCode(activeCurrencyCode);
 
-    const rightVal = value * activeCurrency.sellRate;
+    let leftVal;
+    let rightVal;
+
+    if (side === 'Left') {
+      // If the left side is changed...
+      leftVal = value;
+      rightVal = value * activeCurrency.sellRate;
+    } else {
+      // If the right side is changed...
+      leftVal = value / activeCurrency.sellRate;
+      rightVal = value;
+    }
 
     this.setState({
-      inputLeft: value,
+      inputLeft: leftVal,
       inputRight: rightVal,
     });
   };
@@ -111,7 +122,7 @@ class App extends React.Component {
                     aria-describedby="basic-addon2"
                     step="1"
                     pattern="\d\.\d{2}"
-                    onChange={e => this.handleInputChange(e)}
+                    onChange={e => this.handleInputChange(e, 'Left')}
                   />
                   <span className="input-group-addon" id="basic-addon2">
                     AUD
@@ -137,6 +148,7 @@ class App extends React.Component {
                     aria-describedby="basic-addon3"
                     step="1"
                     pattern="\d\.\d{2}"
+                    onChange={e => this.handleInputChange(e, 'Right')}
                   />
                   <span className="input-group-addon" id="basic-addon3">
                     {activeCurrency.code}
